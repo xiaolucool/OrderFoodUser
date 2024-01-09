@@ -1,57 +1,69 @@
-import { Button, Image, List } from 'antd';
+import { Button, Image, List, Modal } from 'antd';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-
 const ShoppingList = () => {
-    // 获取路由id
     const [params] = useSearchParams()
     const id = params.get('id')
-    const cartList = JSON.parse(window.localStorage.getItem(`cartList${id}`))
+    const [cartList, setCartList] = useState(JSON.parse(window.localStorage.getItem(`cartList${id}`)) || []);
 
     // 商品总价
     let TotalPrice = 0;
 
     if (cartList) {
-        TotalPrice = 0;
-        cartList.forEach(item => {
+        TotalPrice = cartList.reduce((total, item) => {
             if (item.num > 1) {
-                TotalPrice += item.price * item.num;
+                return total + item.price * item.num;
             } else {
-                TotalPrice += item.price;
+                return total + item.price;
             }
-        });
+        }, 0);
     }
 
     // Round TotalPrice to two decimal places
     TotalPrice = parseFloat(TotalPrice.toFixed(2));
 
     console.log("Total Price:", TotalPrice);
-    const delCrt = (index)  => {
-        console.log('删除',index)
-        cartList.splice(index, 1)
-        // 更新缓存
-        window.localStorage.setItem(`cartList${id}`, JSON.stringify(cartList));
 
-    }
+    const delCrt = (index) => {
+        // Display a confirmation modal
+        Modal.confirm({
+            title: '确认删除',
+            content: '您确定要删除这个商品吗？',
+            onOk: () => {
+                // Delete the item and update the localStorage
+                const updatedCartList = [...cartList];
+                updatedCartList.splice(index, 1);
+                setCartList(updatedCartList);
+                window.localStorage.setItem(`cartList${id}`, JSON.stringify(updatedCartList));
+            },
+            onCancel: () => {
+                // Do nothing if the user cancels the deletion
+            },
+        });
+    };
+
     return (
         <>
             <List
                 itemLayout="horizontal"
                 dataSource={cartList}
                 renderItem={(item, index) => (
-                    <List.Item actions={[
-                        <Button 
-                            key={`delete-${index}`} 
-                            type="primary" 
-                            danger 
-                            shape="round" 
-                            onClick={() => delCrt(index)}
-                        >
-                            删除
-                        </Button>
-                    ]} >
+                    <List.Item
+                        actions={[
+                            <Button
+                                key={`delete-${index}`}
+                                type="primary"
+                                danger
+                                shape="round"
+                                onClick={() => delCrt(index)}
+                            >
+                                删除
+                            </Button>
+                        ]}
+                    >
                         <List.Item.Meta
-                            avatar={<Image width={'80px'} key={index} fallback="https://img.katr.tk/2023/12/87b101050aad565ae64c2d0cd83ca6da.png"  src={`/img/${item.image}`} />}
+                            avatar={<Image width={'80px'} key={index} fallback="https://img.katr.tk/2023/12/87b101050aad565ae64c2d0cd83ca6da.png" src={`/img/${item.image}`} />}
                             title={item.name}
                             description={`${item.num}份，￥${item.price * item.num}`}
                         />
@@ -62,4 +74,4 @@ const ShoppingList = () => {
     )
 }
 
-export default ShoppingList 
+export default ShoppingList;
