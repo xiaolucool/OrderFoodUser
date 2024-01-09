@@ -25,9 +25,9 @@
     padding: 10px;
 }
 
-.image-food {
-    width: 400px;
-    height: 400px;
-    min-width: 200px;
-    max-width: 500px;
+/* 默认样式 */
+.img {
+    width: 20rem; /* 100% 宽度，根据父元素宽度自适应 */
+    height: 20rem; /* 100% 高度，根据父元素高度自适应 */
+    object-fit: cover; /* 保持纵横比例，裁剪不足的部分 */
 }

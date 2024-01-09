@@ -1,12 +1,12 @@
-import { Button, Image, List, Modal } from 'antd';
+import { Button, Image, List, Modal, message } from 'antd';
 import { useState } from 'react';
-import { useSearchParams, useParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 
 const ShoppingList = () => {
     const [params] = useSearchParams()
     const id = params.get('id')
-    const url = useParams()
-    console.log('路径',url)
+    const location = useLocation();
+    console.log(location.pathname);
     const [cartList, setCartList] = useState(JSON.parse(window.localStorage.getItem(`cartList${id}`)) || []);
 
     // 商品总价
@@ -32,12 +32,15 @@ const ShoppingList = () => {
         Modal.confirm({
             title: '确认删除',
             content: '您确定要删除这个商品吗？',
+            okText: '确认',
+            cancelText: '取消',
             onOk: () => {
                 // Delete the item and update the localStorage
                 const updatedCartList = [...cartList];
                 updatedCartList.splice(index, 1);
                 setCartList(updatedCartList);
                 window.localStorage.setItem(`cartList${id}`, JSON.stringify(updatedCartList));
+                message.success('删除成功！！！');
             },
             onCancel: () => {
                 // Do nothing if the user cancels the deletion
