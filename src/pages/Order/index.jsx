@@ -14,6 +14,16 @@ const Order = () => {
     const id = params.get('id');
     const phone = JSON.parse(window.localStorage.getItem(`phone${id}`));
 
+    useEffect(() => {
+        // 组件挂载时更新文档标题
+        document.title = '吃货联盟点餐系统-订单详情';
+
+        // 可选地，你可以返回一个清理函数，在组件卸载时重置标题
+        return () => {
+            document.title = '吃货联盟点餐系统';
+        };
+    }, []); // 空的依赖数组确保此效果仅在挂载时运行一次
+
     const fetchData = async () => {
         try {
             const { data } = await axios.get(`/api/order/phone?phone=${phone}`);
@@ -76,7 +86,7 @@ const Order = () => {
             key: 'key',
         }
     ];
-    
+
 
     return (
         <div className="Layout">
@@ -97,9 +107,9 @@ const Order = () => {
                     )}
                 </Content>
                 <Footer className="footer">
-                <Tooltip placement="top" title={'点击去下单'}>
-                <Button type="primary" shape="round" onClick={() => navigate(`/?id=${id}`)}>去下单</Button>
-                </Tooltip>
+                    <Tooltip placement="top" title={'点击去下单'}>
+                        <Button type="primary" shape="round" onClick={() => navigate(`/?id=${id}`)}>去下单</Button>
+                    </Tooltip>
                 </Footer>
             </Layout>
         </div>

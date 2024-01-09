@@ -1,0 +1,6 @@
+{
+    "rewrites": [
+        { "source": "/api", "destination": "https://orderfood.katr.tk/api" },
+        { "source": "/img", "destination": "https://orderfood.katr.tk" }
+    ]
+}
