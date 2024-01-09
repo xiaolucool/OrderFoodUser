@@ -45,6 +45,9 @@ const PcLayout = () => {
 
     // 结算
     const addFood = () => {
+        // if (cartList.length > 0) {
+            navigate('/await/?id=' + id)
+        // }
     }
 
     return (
@@ -63,7 +66,7 @@ const PcLayout = () => {
                             <Badge className='badge' count={cartList ? cartList.length : 0}>
                                 <div className="price" onClick={showDrawer}>{TotalPrice}￥&nbsp;&nbsp;</div>
                             </Badge>
-                            <Button onClick={() => navigate('/await')} type="primary" danger shape="round" icon={<ShoppingCartOutlined />} size={40}>
+                            <Button onClick={() => addFood()} type="primary" danger shape="round" icon={<ShoppingCartOutlined />} size={40}>
                                 去结算
                             </Button>
                         </Flex>
@@ -74,7 +77,7 @@ const PcLayout = () => {
                     <List />
                     <div className="footer-cart">
                         <span className="price cart-price">￥{TotalPrice}</span>
-                        <Button type="primary cart-btn" danger shape="round" onClick={() => addFood}>去结算</Button>
+                        <Button type="primary cart-btn" danger shape="round" onClick={() => addFood()}>去结算</Button>
                     </div>
                 </Drawer>
             </div>

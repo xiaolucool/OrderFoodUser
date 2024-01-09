@@ -1,10 +1,12 @@
 import { Button, Image, List, Modal } from 'antd';
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
 
 const ShoppingList = () => {
     const [params] = useSearchParams()
     const id = params.get('id')
+    const url = useParams()
+    console.log('路径',url)
     const [cartList, setCartList] = useState(JSON.parse(window.localStorage.getItem(`cartList${id}`)) || []);
 
     // 商品总价
