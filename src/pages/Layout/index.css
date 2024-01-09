@@ -1,0 +1,94 @@
+.header,
+.footer {
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.2));
+    backdrop-filter: blur(10px);
+}
+
+.header {
+    color: white;
+    height: 8vh;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 400px) {
+    .ant-layout-header {
+        padding: 0 10px;
+        /* 当屏幕宽度小于 400px 时的 padding */
+    }
+}
+
+.content {
+    height: 84vh;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.footer {
+    height: 8vh;
+    width: 100%;
+}
+.footer-flex {
+    height: 100%;
+    width: 95%;
+}
+
+.logo {
+    height: 100%;
+    width: 70%;
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 10px 10px 10px 0;
+}
+
+.tNum {
+    height: 100%;
+    width: 30%;
+    padding-right: 5%;
+    text-align: right;
+    font-size: 20px;
+    color: gray;
+    display: flex;
+    align-items: center;
+}
+
+.logo-icon {
+    margin-right: 10px;
+    font-size: 30px;
+}
+
+.ant-layout-footer {
+    padding: 0;
+}
+
+.badge {
+    margin-right: 30px;
+    cursor: pointer;
+}
+.price {
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+}
+.footer-cart {
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.2));
+    backdrop-filter: blur(10px);
+    position: absolute;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 10px;
+}
+.cart-price {
+    flex: 1;
+}
+.cart-btn {
+    flex: 1;
+}

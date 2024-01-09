@@ -1,0 +1,33 @@
+.col {
+    padding: 10px 10px 0 10px;
+}
+.card {
+    position: relative;
+}
+.card-price {
+    /* color: #dabd84; */
+    font-size: 16px;
+    font-weight: bold;
+}
+.add-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+.modal, .ant-modal-body {
+    display: flex;
+}
+.modal-img {
+    width: 50%;
+}
+.modal-msg {
+    width: 50%;
+    padding: 10px;
+}
+
+.image-food {
+    width: 400px;
+    height: 400px;
+    min-width: 200px;
+    max-width: 500px;
+}
