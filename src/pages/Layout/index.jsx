@@ -59,8 +59,11 @@ const PcLayout = () => {
                         label="餐桌编号"
                         rules={[
                             {
-                                required: true,
+                                pattern: /^1[3-9]\d{9}$/,
+                                message: '手机号码格式不对',
+                                validateTrigger: 'onBlur'
                             },
+                            { required: true, message: '请输入手机号' }
                         ]}
                     >
                         <InputNumber min={1} max={10} disabled={true} defaultValue={id} />

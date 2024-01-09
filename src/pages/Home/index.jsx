@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { Col, Row, message } from "antd";
 import { Card, Button, Image, Modal, InputNumber } from "antd";
 import axios from "axios";
-import { PlusOutlined, StarOutlined } from "@ant-design/icons";
+import { PlusOutlined, LikeOutlined } from "@ant-design/icons";
 import "./index.css";
 
 const Home = () => {
@@ -11,35 +11,32 @@ const Home = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [cartList, setCart] = useState([]);
     const [list, setList] = useState([]);
-    // 路由
+    const [likeCounts, setLikeCounts] = useState({});
     const navigate = useNavigate();
-    // 获取菜单列表
-    const fetchData = async () => {
-        try {
-            const { data } = await axios.get('/api/dish');
-            setList(data.data.records);
-            message.success('获取成功！！！')
-        } catch (error) {
-            message.error('获取失败！！！')
-        }
-    };
+
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const { data } = await axios.get('/api/dish');
+                setList(data.data.records);
+                message.success('获取成功！！！');
+            } catch (error) {
+                message.error('获取失败！！！');
+            }
+        };
+
         fetchData();
     }, []);
 
-    // 获取路由id
     const [params] = useSearchParams();
     const id = params.get('id');
 
-    // 读取本地缓存并初始化购物车数据
     useEffect(() => {
         const storedCartList = JSON.parse(window.localStorage.getItem(`cartList${id}`)) || [];
         setCart(storedCartList);
     }, [id]);
 
     useEffect(() => {
-
-        // 使用 setTimeout 延迟设置默认值
         setTimeout(() => {
             setCart((prevCartList) => {
                 if (listitem) {
@@ -48,12 +45,10 @@ const Home = () => {
                     );
 
                     if (existingItemIndex !== -1) {
-                        // 商品已存在，更新数量
                         const updatedCart = [...prevCartList];
                         updatedCart[existingItemIndex].num = 1;
                         return updatedCart;
                     } else {
-                        // 商品不存在，添加新商品
                         return [
                             ...prevCartList,
                             {
@@ -68,6 +63,7 @@ const Home = () => {
             });
         }, 0);
     }, [listitem]);
+    
 
     const showModal = (item) => {
         setIsModalOpen(true);
@@ -77,8 +73,7 @@ const Home = () => {
     const handleOk = () => {
         setIsModalOpen(false);
         window.localStorage.setItem(`cartList${id}`, JSON.stringify(cartList));
-        navigate(`/?id=${id}`)
-        // window.location.reload();
+        navigate(`/?id=${id}`);
     };
 
     const handleCancel = () => {
@@ -92,12 +87,10 @@ const Home = () => {
             );
 
             if (existingItemIndex !== -1) {
-                // 商品已存在，更新数量
                 const updatedCart = [...prevCartList];
                 updatedCart[existingItemIndex].num = value;
                 return updatedCart;
             } else {
-                // 商品不存在，添加新商品
                 return [
                     ...prevCartList,
                     {
@@ -109,20 +102,22 @@ const Home = () => {
         });
     };
 
-    // 点赞
-    const addStar = async (itemId) => {
+    const addStar = async (itemId, favour, index) => {
         try {
-            const { data } =  await axios.put(`/api/dish/${itemId}`)
-            console.log(data.data)
-            message.success('点赞成功！！！')
+            const { data } = await axios.put(`/api/dish/${itemId}`);
+            const updatedLikeCounts = { ...likeCounts, [itemId]: data.data.likes };
+            setLikeCounts(updatedLikeCounts);
+            list[index].favour = ++favour
+            message.success('点赞成功！！！');
         } catch (error) {
-            message.error('点赞失败！！！')
+            message.error('点赞失败！！！');
         }
     }
+
     return (
         <>
             <div className="Home">
-                {list.length > 0 ? ( // 判断 list 是否为空
+                {list.length > 0 ? (
                     <Row>
                         {list.map((item, index) => (
                             <Col
@@ -137,16 +132,17 @@ const Home = () => {
                                 <Card
                                     className="card"
                                     title={item.name}
-                                    style={{ width: "100%",minWidth: '10rem',maxWidth:'20rem' }}
+                                    style={{ width: "100%", minWidth: '10rem', maxWidth: '20rem' }}
                                 >
+                                    <span className="like-count">{likeCounts[item.id]}</span>
                                     <Image
                                         className="img"
                                         fallback="https://img.katr.tk/2023/12/87b101050aad565ae64c2d0cd83ca6da.png"
                                         src={`/img/${item.image}`}
-                                        style={{ objectFit: "cover"}}
+                                        style={{ objectFit: "cover" }}
                                     />
                                     <span className="card-price">￥{item.price}</span><br />
-                                    <span>00</span><Button onClick={() => addStar(item.id)} icon={<StarOutlined />}></Button>
+                                    <Button className="add-start" shape="round" onClick={() => addStar(item.id,item.favour,index)} icon={<LikeOutlined />}>{item.favour}</Button>
                                     <Button
                                         onClick={() => showModal(item)}
                                         className="add-btn"

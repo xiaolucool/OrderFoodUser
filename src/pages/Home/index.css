@@ -14,6 +14,11 @@
     right: 10px;
     bottom: 10px;
 }
+.add-start {
+    position: absolute;
+    right: 50px;
+    bottom: 10px;
+}
 .modal, .ant-modal-body {
     display: flex;
 }
