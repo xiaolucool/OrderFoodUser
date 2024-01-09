@@ -9,7 +9,7 @@ function RequireAuth({ children }) {
 
   React.useEffect(() => {
     if (!id) {
-      navigate('/login');
+      navigate('/table');
     }
   }, [id, navigate]);
 
