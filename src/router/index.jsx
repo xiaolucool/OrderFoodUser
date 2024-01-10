@@ -6,6 +6,10 @@ import RequireAuth from "./RequireAuth.jsx"
 import Table from "../pages/Table/index.jsx"
 /* 路由配置 */
 const router = createBrowserRouter([
+    // {
+    //     path: "/", // 路由路径
+    //     element: <Navigate to="/client" />, // 路由组件
+    // },
     {
         path: "/",
         element: <RequireAuth><Layout/></RequireAuth>,

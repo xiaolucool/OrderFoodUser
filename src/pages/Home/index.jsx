@@ -19,7 +19,6 @@ const Home = () => {
             try {
                 const { data } = await axios.get('/api/dish');
                 setList(data.data.records);
-                message.success('获取成功！！！');
             } catch (error) {
                 message.error('获取失败！！！');
             }
@@ -34,7 +33,7 @@ const Home = () => {
     useEffect(() => {
         const storedCartList = JSON.parse(window.localStorage.getItem(`cartList${id}`)) || [];
         setCart(storedCartList);
-    }, [id]);
+    }, []);
 
     useEffect(() => {
         setTimeout(() => {
@@ -63,18 +62,44 @@ const Home = () => {
             });
         }, 0);
     }, [listitem]);
-    
+
 
     const showModal = (item) => {
         setIsModalOpen(true);
         setListitem(item);
     };
 
-    const handleOk = () => {
+    const handleOk = (litem) => {
         setIsModalOpen(false);
-        window.localStorage.setItem(`cartList${id}`, JSON.stringify(cartList));
+        const local = JSON.parse(window.localStorage.getItem(`cartList${id}`)) || [];
+        
+        // 查找匹配的对象
+        const matchingCartItem = cartList.find(item => item.name === litem.name);
+        console.log(matchingCartItem)
+    
+    
+        // 检查最后一个对象是否已存在
+        const lastObjectExists = local.some(item => item.id === litem.id);
+    
+        // 如果不存在，则添加到数组中
+        if (!lastObjectExists) {
+            local.push(matchingCartItem);
+            window.localStorage.setItem(`cartList${id}`, JSON.stringify(local));
+        } else {
+            
+            window.localStorage.removeItem(`cartList${id}`);
+            // 存在则更新本地name和lastObjectExists.name相同的属性的num值，把lastObjectExists的.num给本地name相同的那个对象
+            local.map(item => {
+                if (item.name === matchingCartItem.name) {
+                    item.num = matchingCartItem.num;
+                }
+            })
+            window.localStorage.setItem(`cartList${id}`, JSON.stringify(local));
+        }
+    
         navigate(`/?id=${id}`);
     };
+    
 
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -132,17 +157,17 @@ const Home = () => {
                                 <Card
                                     className="card"
                                     title={item.name}
-                                    style={{ width: "100%", minWidth: '10rem', maxWidth: '20rem' }}
+                                    style={{ width: "100%" }}
                                 >
                                     <span className="like-count">{likeCounts[item.id]}</span>
                                     <Image
                                         className="img"
                                         fallback="https://img.katr.tk/2023/12/87b101050aad565ae64c2d0cd83ca6da.png"
                                         src={`/img/${item.image}`}
-                                        style={{ objectFit: "cover" }}
+                                        style={{ objectFit: "cover", minHeight: '12rem', maxHeight: '20rem' }}
                                     />
                                     <span className="card-price">￥{item.price}</span><br />
-                                    <Button className="add-start" shape="round" onClick={() => addStar(item.id,item.favour,index)} icon={<LikeOutlined />}>{item.favour}</Button>
+                                    <Button className="add-start" shape="round" onClick={() => addStar(item.id, item.favour, index)} icon={<LikeOutlined />}>{item.favour}</Button>
                                     <Button
                                         onClick={() => showModal(item)}
                                         className="add-btn"
@@ -162,7 +187,7 @@ const Home = () => {
                 className="modal"
                 title={listitem ? listitem.title : ""}
                 open={isModalOpen}
-                onOk={handleOk}
+                onOk={() => handleOk(listitem)}
                 onCancel={handleCancel}
                 cancelText={"取消"}
                 okText={"加入购物车"}

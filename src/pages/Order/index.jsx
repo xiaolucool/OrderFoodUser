@@ -1,4 +1,4 @@
-import { Layout, Table, message, Button, Tooltip } from 'antd';
+import { Layout, Table, message, Button, Tooltip, Tag } from 'antd';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -12,7 +12,7 @@ const Order = () => {
     const navigate = useNavigate();
     const [params] = useSearchParams();
     const id = params.get('id');
-    const phone = JSON.parse(window.localStorage.getItem(`phone${id}`));
+    const phone = JSON.parse(window.localStorage.getItem(`phone`));
 
     useEffect(() => {
         // 组件挂载时更新文档标题
@@ -29,7 +29,6 @@ const Order = () => {
             const { data } = await axios.get(`/api/order/phone?phone=${phone}`);
             setList(data.data || []);
             setLoading(false);
-            message.success('获取成功！！！');
         } catch (error) {
             message.error('获取失败！！！');
         }
@@ -44,6 +43,17 @@ const Order = () => {
         totalAmount: parseFloat(item.totalAmount.toFixed(2)),
         key: index.toString(), // 使用索引作为 key
     }));
+    // 格式化时间
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        const formattedDate = new Date(dateString).toLocaleString('zh-cn', options);
+        return formattedDate;
+    };
+    // 价格增加单位
+    const priceUnit = (price) => {
+        return price + '￥';
+    };
+
     const columns = [
         {
             title: '订单号',
@@ -64,16 +74,23 @@ const Order = () => {
             title: '下单时间',
             dataIndex: 'createTime',
             key: 'key',
+            render: (createTime) => formatDate(createTime),
         },
         {
             title: '订单状态',
             dataIndex: 'status',
             key: 'key',
+            render: (status) => (
+                <Tag color={getStatusColor(status)}>
+                    {status}
+                </Tag>
+            ),
         },
         {
             title: '总价',
             dataIndex: 'totalAmount',
             key: 'key',
+            render: (totalAmount) => priceUnit(totalAmount),
         },
         {
             title: '手机号',
@@ -86,10 +103,21 @@ const Order = () => {
             key: 'key',
         }
     ];
-
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "等待确认":
+                return 'orange';
+            case "订单完成":
+                return 'blue';
+            case "等待出餐":
+                return 'green';    
+            default:
+                return 'default';
+        }
+    };
 
     return (
-        <div className="Layout">
+        <div className="Layout-order">
             <Layout>
                 <Header className="header">
                     <span className="logo">

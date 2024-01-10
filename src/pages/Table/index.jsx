@@ -17,7 +17,7 @@ const Table = () => {
             <div className="table">
                 <Card
                     className="card-table"
-                    title="卓号管理"
+                    title="桌号选择"
                     bordered={false}
                 >
                   请输入桌号：<InputNumber min={1} max={100} defaultValue={1} onChange={onChange} />

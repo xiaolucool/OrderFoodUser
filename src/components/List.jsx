@@ -1,14 +1,13 @@
 import { Button, Image, List, Modal, message } from 'antd';
 import { useState } from 'react';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const ShoppingList = () => {
     const [params] = useSearchParams()
     const id = params.get('id')
-    const location = useLocation();
-    console.log(location.pathname);
+    // 路由
+    const navigate = useNavigate();
     const [cartList, setCartList] = useState(JSON.parse(window.localStorage.getItem(`cartList${id}`)) || []);
-
     // 商品总价
     let TotalPrice = 0;
 
@@ -22,28 +21,29 @@ const ShoppingList = () => {
         }, 0);
     }
 
-    // Round TotalPrice to two decimal places
+    // 小数点后两位的整数价格
     TotalPrice = parseFloat(TotalPrice.toFixed(2));
 
     console.log("Total Price:", TotalPrice);
 
     const delCrt = (index) => {
-        // Display a confirmation modal
+        // 模态窗口
         Modal.confirm({
             title: '确认删除',
             content: '您确定要删除这个商品吗？',
             okText: '确认',
             cancelText: '取消',
             onOk: () => {
-                // Delete the item and update the localStorage
+                // 删除该项并更新 localStorage
                 const updatedCartList = [...cartList];
                 updatedCartList.splice(index, 1);
                 setCartList(updatedCartList);
                 window.localStorage.setItem(`cartList${id}`, JSON.stringify(updatedCartList));
                 message.success('删除成功！！！');
+                navigate(`/?id=${id}`)
             },
             onCancel: () => {
-                // Do nothing if the user cancels the deletion
+                // 如果用户取消删除，则不执行任何操作
             },
         });
     };

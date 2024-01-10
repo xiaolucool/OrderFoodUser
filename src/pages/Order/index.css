@@ -1,3 +1,7 @@
+.layout-order {
+    min-width: 650px;
+    overflow-x: scroll;
+}
 .footer {
     display: flex;
     align-items: center;

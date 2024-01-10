@@ -110,7 +110,7 @@ const PcLayout = () => {
                             // 下单成功清除本地缓存
                             window.localStorage.removeItem(`cartList${id}`)
                             // 保存用户手机号到本都缓存
-                            window.localStorage.setItem(`phone${id}`, formData.phone)
+                            window.localStorage.setItem(`phone`, formData.phone)
                             message.success('下单成功！');
                             navigate(`/order/?id=${id}`)
                         } catch (error) {
@@ -160,7 +160,7 @@ const PcLayout = () => {
                     </Footer>
                 </Layout>
                 {/* 右侧弹窗 */}
-                <Drawer title="购物车" placement="right" onClose={onClose} open={open}>
+                <Drawer title="购物车" destroyOnClose={true} placement="right" onClose={onClose} open={open}>
                     <List />
                     <div className="footer-cart">
                         <span className="price cart-price">￥{TotalPrice}</span>
